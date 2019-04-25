@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="header center orange-text">{{object.deck.deck_name}} V {{object.opponent.deck_name}}</h1>
+<div class="row">
+    <div class="col s3">
+        <img class="responsive-img" src="{{object.deck.emblem.image_link}}"/>
+    </div>
+    <div class="col s3">
+        <h4>Cards In</h4>
+        <ul>
+            {% for card in object.get_cards_in %}
+                <li>{{card.qty}} x {{card.card}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col s3">
+        <h4>Cards Out</h4>
+        <ul>
+            {% for card in object.get_cards_out %}
+                <li>{{card.qty}} x {{card.card}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="col s3">
+        <img class="responsive-img" src="{{object.opponent.emblem.image_link}}"/>
+    </div>
+</div>
+{% endblock content %}

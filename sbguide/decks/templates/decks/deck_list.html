@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="header center orange-text">Decks</h1>
+<div class="row">
+{% for deck in object_list %}
+<div class="col s6">
+    <h3 class="header">{{ deck.deck_name}}</h2>
+    <div class="card horizontal">
+        <div class="card-image">
+        <img class="responsive-img" src="{{deck.emblem.image_link}}"/>
+        </div>
+        <div class="card-stacked">
+        <div class="card-content">
+            <h4>Sideboard</h4>
+            <ul>
+            {% for card in deck.get_sideboard_cards %}
+                    <li>{{ card.card }} </li>
+            {% endfor %}
+            </ul>
+        </div>
+        <div class="card-action">
+            <a href="/decks/{{deck.id}}/">Sideboard Guide</a>
+        </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% endblock content %}
+
+            

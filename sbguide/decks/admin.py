@@ -11,5 +11,6 @@ class DeckAdmin(admin.ModelAdmin):
     search_fields = ('deck_name',)
     list_filter = ('archetype', 'legality')
     inlines = [DecklistItemline,]
+    raw_id_fields = ('emblem',)
 
 admin.site.register(Deck, DeckAdmin)
