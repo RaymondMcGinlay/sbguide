@@ -1,12 +1,30 @@
 from django.db import models
+from autoslug import AutoSlugField
+from django.contrib.auth import get_user_model
+
+def get_slug(instance):
+    if instance.owner:
+        return "%s-%s-%s" % (instance.dev ,instance.deck.slug, instance.opponent.slug)
+    return "%s-%s" % (instance.deck.slug, instance.opponent.slug)
 
 # Create your models here.
 class Sideboard(models.Model):
     """
         Matchup between two decks
     """
+    owner = models.ForeignKey(
+        get_user_model(),
+        related_name='sideboard_user',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+    slug = AutoSlugField(populate_from=get_slug)
     deck = models.ForeignKey('decks.deck', related_name='sideboard_deck', on_delete=models.CASCADE)
     opponent = models.ForeignKey('decks.deck', related_name='opponent_deck', on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ('owner', 'deck', 'opponent')
 
     def __str__(self):
         return  "%s v %s" % (self.deck.deck_name, self.opponent.deck_name)
@@ -28,6 +46,12 @@ class Sideboard(models.Model):
         if diff == 0:
             return True
         return False
+    
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('sideboard-detail', args=[str(self.slug)])
+
+
 
 class SideboardItem(models.Model):
     """

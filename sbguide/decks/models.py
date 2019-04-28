@@ -1,6 +1,8 @@
 from django.db import models
 import urllib
+from autoslug import AutoSlugField
 from cards.models import Card
+
 
 
 class DeckManager(models.Manager):
@@ -40,6 +42,7 @@ class Deck(models.Model):
         ("MODERN", "Modern"),   
     )
     deck_name = models.CharField(max_length=255)
+    slug = AutoSlugField(populate_from='title')
     archetype = models.CharField(max_length=200, choices=ARCHETYPE_CHOICES)
     legality = models.CharField(max_length=200, choices=LEGALITY_CHOICES)
     emblem = models.ForeignKey('cards.card', related_name='emblem_card', on_delete=models.CASCADE)
@@ -61,7 +64,7 @@ class Deck(models.Model):
         mb_string="".join([urllib.parse.quote("%s %s" % (c['qty'], c['card']))+"%0A" for c in mb])
         sb_string="".join([urllib.parse.quote("%s %s" % (c['qty'], c['card']))+"%0A" for c in sb])   
         return "deckmain=%s&deckside=%s" % (mb_string, sb_string)
-
+    
     def __str__(self):
         return self.deck_name 
 

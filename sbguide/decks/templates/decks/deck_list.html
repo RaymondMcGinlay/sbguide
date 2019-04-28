@@ -19,7 +19,10 @@
             </ul>
         </div>
         <div class="card-action">
-            <a href="/decks/{{deck.id}}/">Sideboard Guide</a>
+            <a href="{% url 'sideboard-list' deck.slug %}">Sideboard Guide</a>
+        </div>
+        <div class="card-action">
+            <a href="{% url 'deck-detail' deck.slug %}">Decklist</a>
         </div>
         </div>
     </div>

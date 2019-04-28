@@ -19,9 +19,9 @@ from django.conf.urls import include, url
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='base.html')),
+    path('admin/', admin.site.urls),
     url('accounts/', include('allauth.urls')),
     url('decks/', include('decks.urls')),
     url('sideboards/', include('sideboards.urls')),
-    path('admin/', admin.site.urls),
+    path('', TemplateView.as_view(template_name='base.html')),
 ]

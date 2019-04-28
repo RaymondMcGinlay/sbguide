@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1 class="header center orange-text">{{object.deck.deck_name}} V {{object.opponent.deck_name}}</h1>
+<h2 class="header center orange-text">{{object.deck.deck_name}} V {{object.opponent.deck_name}}</h2>
+{% if object.owner.username%}
+<h3 class="header center blue-text">
+    submited by: {{object.owner.username}} 
+    {% if user == object.owner %}
+        <a class="waves-effect waves-light btn-large" href="{% url 'sideboard-edit' object.slug %}">edit</a>
+    {% endif %}
+</h3>
+{% endif %}
+
 <div class="row">
     <div class="col s3">
         <img class="responsive-img" src="{{object.deck.emblem.image_link}}"/>
