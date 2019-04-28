@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="header center orange-text">{{object_list.first.deck.deck_name}} Matchups</h1>
+  <a class="btn-floating btn-large waves-effect waves-light red" href="{% url 'sideboard-create' %}?deck={{object.id}}"><i class="material-icons">add</i></a>
+    {% for object in object_list %}
+    {% cycle "row1" "row2"  as rows silent %}
+        {% if rows == "row1" %}
+        <div class="row">
+        {% endif %}
+        {% include "sideboards/widgets/sb_compact.html"%}
+        {% if rows == "row2" or forloop.last %}
+            </div>
+        {% endif %}
+    {% endfor %}
+
+{% endblock content %}
