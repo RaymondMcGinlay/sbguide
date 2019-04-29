@@ -62,7 +62,7 @@ ROOT_URLCONF = 'sbguide.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['/var/projects/sbguides/templates', ],
+        'DIRS': [BASE_DIR+'/templates', ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -130,6 +130,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR+'/static/'
+STATICFILES_DIRS = (BASE_DIR+"/static_src/", )
 
 AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`
@@ -138,3 +139,8 @@ AUTHENTICATION_BACKENDS = (
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
 )
+
+# Authentication options
+if DEBUG:
+    ACCOUNT_EMAIL_REQUIRED =False
+    ACCOUNT_EMAIL_VERIFICATION = "none"

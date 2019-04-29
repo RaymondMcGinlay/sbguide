@@ -1,0 +1,16 @@
+
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="header center orange-text">Add a sideboard item</h1>
+
+<form class="login" method="POST" action="{% url 'sideboard-create' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button class="primaryAction" type="submit">Sign In</button>
+</form>
+<script>
+ $(document).ready(function(){
+    $('select').formSelect();
+  });
+</script>
+{% endblock content %}

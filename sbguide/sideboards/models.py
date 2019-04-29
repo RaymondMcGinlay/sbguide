@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 
 def get_slug(instance):
     if instance.owner:
-        return "%s-%s-%s" % (instance.dev ,instance.deck.slug, instance.opponent.slug)
+        return "%s-%s-%s" % (instance.owner ,instance.deck.slug, instance.opponent.slug)
     return "%s-%s" % (instance.deck.slug, instance.opponent.slug)
 
 # Create your models here.

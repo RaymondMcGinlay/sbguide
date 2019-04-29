@@ -4,7 +4,7 @@ from .models import SideboardItem, Sideboard
 class SideboardForm(ModelForm):
     class Meta:
         model = Sideboard
-        fields = ['deck', 'opponent']
+        fields = ['deck', 'opponent', 'owner']
 
 
 class SideboardItemForm(ModelForm):
