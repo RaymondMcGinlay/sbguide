@@ -18,7 +18,7 @@ class SideboardItemForm(ModelForm):
         fields = ['card', 'delta', 'sideboard']
         widgets = {
             'card': autocomplete.ModelSelect2(url='card-autocomplete',
-            attrs={'data-minimum-input-length': 3})
+            attrs={'data-minimum-input-length': 3, 'data-html': True})
         }
     
      

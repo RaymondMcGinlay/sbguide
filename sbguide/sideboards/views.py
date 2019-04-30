@@ -3,6 +3,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic import CreateView
 from django.views.generic import UpdateView
+from django.urls import reverse
 from .forms import SideboardForm, SideboardItemForm
 from .models import Sideboard, SideboardItem
 from decks.models import Deck
@@ -44,3 +45,24 @@ class SideboardCreateView(LoginRequiredMixin, CreateView):
 class SideboardItemCreateView(LoginRequiredMixin, CreateView):
     model = SideboardItem
     form_class = SideboardItemForm
+
+    def get_success_url(self):
+        sb_slug = self.kwargs['slug']
+        sideboard = Sideboard.objects.get(slug=sb_slug)
+        return reverse('sideboard-edit', kwargs={'slug': sideboard.slug})
+
+    def get_context_data(self, **kwargs):
+        sb_slug = self.kwargs['slug']
+        sideboard = Sideboard.objects.get(slug=sb_slug)
+        context = super().get_context_data(**kwargs)
+        context["form"] = SideboardItemForm(initial={
+            'sideboard': sideboard
+            })
+        context["object"] = sideboard
+        return context
+
+    def form_valid(self, form):
+        """If objects exists change delta."""
+        self.object = form.save()
+        return super().form_valid(form)
+    
