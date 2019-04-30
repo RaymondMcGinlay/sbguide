@@ -14,7 +14,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "../")
-
+PROJECT_ROOT = BASE_DIR
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -30,6 +30,10 @@ ALLOWED_HOSTS = ['*',]
 # Application definition
 
 INSTALLED_APPS = [
+    # Django autocomplete must be before admin
+    'dal',
+    'dal_select2',
+    # Django core apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,6 +45,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'materialize',
     #sbguide apps
     'cards',
     'decks',
@@ -62,7 +67,7 @@ ROOT_URLCONF = 'sbguide.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR+'/templates', ],
+        'DIRS': [BASE_DIR+'/templates', PROJECT_ROOT],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

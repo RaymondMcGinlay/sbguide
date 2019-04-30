@@ -1,16 +1,21 @@
 
-{% extends 'base.html' %}
+{% extends 'materialize_base.html' %}
+{% load static %}
 {% block content %}
-<h1 class="header center orange-text">Add a sideboard item</h1>
 
-<form class="login" method="POST" action="{% url 'sideboard-create' %}">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button class="primaryAction" type="submit">Sign In</button>
-</form>
-<script>
- $(document).ready(function(){
-    $('select').formSelect();
-  });
-</script>
+<h1 class="header center orange-text">Add a sideboard item</h1>
+<div class="row">
+  <div class="col s3">
+  <form class="login" method="POST" action="{% url 'sideboard-create' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="primaryAction" type="submit">Sign In</button>
+  </form>
+  </div>
+</div>
 {% endblock content %}
+{% block extra_javascripts %}
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+{{ form.media }}
+{% endblock extra_javascripts%}
