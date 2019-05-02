@@ -33,13 +33,13 @@ class Sideboard(models.Model):
         return  "%s v %s" % (self.deck.deck_name, self.opponent.deck_name)
 
     def get_sb_items(self):
-        return SideboardItem.objects.filter(sideboard=self)
+        return SideboardItem.objects.filter(sideboard=self).order_by('card__name')
     
     def get_cards_in(self):
-        return [{'qty': d.delta, 'card' :d.card.name} for d in self.get_sb_items() if d.delta > 0]
+        return [{'qty': d.delta, 'card' :d.card.name, 'id': d.card.id} for d in self.get_sb_items() if d.delta > 0]
     
     def get_cards_out(self):
-        return [{'qty': abs(d.delta), 'card' :d.card.name} for d in self.get_sb_items() if d.delta < 0]
+        return [{'qty': abs(d.delta), 'card' :d.card.name, 'id': d.card.id} for d in self.get_sb_items() if d.delta < 0]
     
     def check_sanity(self):
         diff = sum([sideboarditem.delta for sideboarditem in self.get_sb_items()])
@@ -59,7 +59,7 @@ class SideboardItem(models.Model):
     """
     sideboard = models.ForeignKey('sideboards.sideboard', related_name='sideboarditem_sideboard', on_delete=models.CASCADE)
     card = models.ForeignKey('cards.card', related_name='sideboarditem_card', on_delete=models.CASCADE)
-    delta = models.IntegerField()
+    delta = models.IntegerField(default=0)
 
     def in_or_out(self):
         if self.delta > 0:

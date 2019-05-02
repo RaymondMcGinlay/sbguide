@@ -7,23 +7,23 @@ server {
     client_body_timeout 15m;
     client_max_body_size 50M;
     send_timeout 6m;
-    ssl_certificate     /var/projects/sbguides/deployment/nginx/develup.cert;
-    ssl_certificate_key /var/projects/sbguides/deployment/nginx/develup.key;
+    ssl_certificate     /var/projects/sbguide/deployment/nginx/develup.cert;
+    ssl_certificate_key /var/projects/sbguide/deployment/nginx/develup.key;
     ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
     ssl_ciphers         HIGH:!aNULL:!MD5;
-    access_log /var/projects/sbguides/logs/nginx-access.log;
-    error_log /var/projects/sbguides/logs/nginx-error.log;
+    access_log /var/projects/sbguide/logs/nginx-access.log;
+    error_log /var/projects/sbguide/logs/nginx-error.log;
     
 	location /media/  {
-        	root /var/projects/sbguides;
+        	root /var/projects/sbguide;
         }
 
 	location /static/  {
-                root /var/projects/sbguides;
+                root /var/projects/sbguide;
         }
 
     location /docs/ {
-        alias /var/projects/sbguides/docs/build/html/;
+        alias /var/projects/sbguide/docs/build/html/;
     }
 
 	location / {
@@ -56,7 +56,7 @@ server {
      }
     		include uwsgi_params;
             proxy_pass_request_headers      on;
-    		uwsgi_pass unix:/var/projects/sbguides/run/sbguide.sock;
+    		uwsgi_pass unix:/var/projects/sbguide/run/sbguide.sock;
 	}
 }
 

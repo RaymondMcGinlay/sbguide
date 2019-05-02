@@ -7,6 +7,7 @@ from django.urls import reverse
 from .forms import SideboardForm, SideboardItemForm
 from .models import Sideboard, SideboardItem
 from decks.models import Deck
+from cards.models import Card
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
@@ -26,7 +27,6 @@ class SideboardListView(ListView):
             })
         return context
     
-
 
 class SideboardDetailView(DetailView):
     model = Sideboard
@@ -65,4 +65,29 @@ class SideboardItemCreateView(LoginRequiredMixin, CreateView):
         """If objects exists change delta."""
         self.object = form.save()
         return super().form_valid(form)
+    
+    def get(self, request, *args, **kwargs):
+        sb_slug = self.kwargs['slug']
+        sideboard = Sideboard.objects.get(slug=sb_slug)
+        c = request.GET.get('c', '')
+        p = request.GET.get('p', '')
+        m = request.GET.get('m', '')
+        if c and (m or p):
+            card = Card.objects.get(id=c)
+            sideboarditem, created = SideboardItem.objects.get_or_create(
+                sideboard = sideboard,
+                card = card
+            )
+            if p:
+                delta = sideboarditem.delta+1
+                if delta < 5:
+                    sideboarditem.delta = delta
+                    sideboarditem.save()
+            if m:
+                delta = sideboarditem.delta-1
+                if delta > -5:
+                    sideboarditem.delta = delta
+                    sideboarditem.save()
+        self.object = None
+        return super().get(request, *args, **kwargs)
     

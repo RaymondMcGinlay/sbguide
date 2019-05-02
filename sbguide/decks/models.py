@@ -53,10 +53,10 @@ class Deck(models.Model):
         ordering = ['deck_name']
 
     def get_mainboard_cards(self):
-        return [{'qty': d.quantity, 'card' :d.card.name} for d in DeckListItem.objects.filter(deck=self, is_sideboard=False)]
+        return [{'qty': d.quantity, 'card' :d.card.name, 'id': d.card.id} for d in DeckListItem.objects.filter(deck=self, is_sideboard=False)]
 
     def get_sideboard_cards(self):
-        return [{'qty': d.quantity, 'card' :d.card.name} for d in DeckListItem.objects.filter(deck=self, is_sideboard=True)]
+        return [{'qty': d.quantity, 'card' :d.card.name, 'id': d.card.id} for d in DeckListItem.objects.filter(deck=self, is_sideboard=True)]
 
     def get_decklist_str(self):
         mb = self.get_mainboard_cards()

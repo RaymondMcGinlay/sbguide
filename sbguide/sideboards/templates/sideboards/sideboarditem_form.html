@@ -18,7 +18,7 @@
         <h4>Main</h4>
         <ul>
             {% for card in object.deck.get_mainboard_cards %}
-                <li>{{card.qty}} x {{card.card}}</li>
+                <li>{{card.qty}} x <a href="{% url 'sideboard-edit' object.slug %}?c={{card.id}}&m=true">{{card.card}}</a></li>
             {% endfor %}
         </ul>
 
@@ -27,7 +27,7 @@
         <h4>Cards Out</h4>
         <ul>
             {% for card in object.get_cards_out %}
-                <li>{{card.qty}} x {{card.card}}</li>
+                <li>{{card.qty}} x <a href="{% url 'sideboard-edit' object.slug %}?c={{card.id}}&p=true">{{card.card}}</a></li>
             {% endfor %}
         </ul>
     </div>
@@ -35,7 +35,7 @@
         <h4>Cards In</h4>
         <ul>
             {% for card in object.get_cards_in %}
-                <li>{{card.qty}} x {{card.card}}</li>
+                <li>{{card.qty}} x <a href="{% url 'sideboard-edit' object.slug %}?c={{card.id}}&m=true">{{card.card}}</a></li>
             {% endfor %}
         </ul>
     </div>
@@ -43,7 +43,7 @@
         <h4>Side</h4>
         <ul>
             {% for card in object.deck.get_sideboard_cards %}
-                <li>{{card.qty}} x {{card.card}}</li>
+                <li>{{card.qty}} x <a href="{% url 'sideboard-edit' object.slug %}?c={{card.id}}&p=true">{{card.card}}</a></li>
             {% endfor %}
         </ul>
     </div>
