@@ -6,7 +6,7 @@ from django.views.generic import UpdateView
 from django.urls import reverse
 from .forms import SideboardForm, SideboardItemForm
 from .models import Sideboard, SideboardItem
-from decks.models import Deck
+from decks.models import Deck, DeckListItem
 from cards.models import Card
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -79,13 +79,23 @@ class SideboardItemCreateView(LoginRequiredMixin, CreateView):
                 card = card
             )
             if p:
+                if sideboarditem.delta < 0:
+                    is_sideboard = False
+                else:
+                    is_sideboard = True 
+                deck_qty = DeckListItem.objects.get(deck=sideboard.deck, card=card, is_sideboard=is_sideboard).quantity
                 delta = sideboarditem.delta+1
-                if delta < 5:
+                if delta <= deck_qty:
                     sideboarditem.delta = delta
                     sideboarditem.save()
             if m:
+                if sideboarditem.delta > 0:
+                    is_sideboard = True
+                else:
+                    is_sideboard = False
+                deck_qty = DeckListItem.objects.get(deck=sideboard.deck, card=card, is_sideboard=is_sideboard).quantity
                 delta = sideboarditem.delta-1
-                if delta > -5:
+                if delta >= -deck_qty:
                     sideboarditem.delta = delta
                     sideboarditem.save()
         self.object = None
