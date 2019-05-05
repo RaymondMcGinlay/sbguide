@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>Sideboard Guides</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="/static/materialize/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="/static/materialize/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+  <nav class="light-blue lighten-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo">Sideboard Guides</a>
+      <ul class="right hide-on-med-and-down">
+      <li><a href="{% url 'mydeck-list' %}/">My Decks</a></li>
+        <li><a href="{% url 'deck-list' %}">Meta Decks</a></li>
+        <li><a href="/stats/">Stats</a></li>
+        <li><a href="/accounts/login/">Login</a></li>
+      </ul>
+
+      <ul id="nav-mobile" class="sidenav">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
+      <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+        {% block content %}
+      <br><br>
+      <h1 class="header center orange-text">An easier way to sideboard</h1>
+      <div class="row center">
+        <h5 class="header col s12 light">Create, save, print and share your sideboard guides for "Magic, the Gathering"</h5>
+      </div>
+      <div class="row center">
+        <a href="http://materializecss.com/getting-started.html" id="download-button" class="btn-large waves-effect waves-light orange">Get Started</a>
+      </div>
+      <br><br>
+
+    </div>
+  </div>
+
+
+  <div class="container">
+    <div class="section">
+
+      <!--   Icon Section   -->
+      <div class="row">
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-blue-text"><i class="material-icons">flash_on</i></h2>
+            <h5 class="center">Speedy SB building</h5>
+
+            <p class="light">Drag and drop cards in an out for each matchup. Save your SB guide to tweak later.</p>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-blue-text"><i class="material-icons">group</i></h2>
+            <h5 class="center">Hive Mind</h5>
+
+            <p class="light">Get recomendations and see what other players are bringing in against your toughest match ups.</p>
+          </div>
+        </div>
+
+        <div class="col s12 m4">
+          <div class="icon-block">
+            <h2 class="center light-blue-text"><i class="material-icons">settings</i></h2>
+            <h5 class="center">Putting it all together</h5>
+
+            <p class="light">Output your decklist in variety of formats for print. Sends your decklist to decklist.org so you can be tournament ready.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>  
+  {% endblock %}
+      <br><br>
+  </div>
+
+  <footer class="page-footer orange">
+    <div class="container">
+      <div class="row">
+        <div class="col l6 s12">
+          <h5 class="white-text">Disclaimer</h5>
+          <p class="grey-text text-lighten-4">The information presented on this site about Magic: The Gathering, both literal and graphical, is copyrighted by Wizards of the Coast. This website is not produced, endorsed, supported, or affiliated with Wizards of the Coast.
+     </p>
+
+
+        </div>
+        <div class="col l3 s12">
+        </div>
+        <div class="col l3 s12">
+          <h5 class="white-text">Resources</h5>
+          <ul>
+            <li><a class="white-text" href="https://decklist.org/">Decklist.org</a></li>
+            <li><a class="white-text" href="https://scryfall.com">Scryfall</a></li>
+            <li><a class="white-text" href="https://www.mtggoldfish.com">MTG Goldfish</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <div class="container">
+     </div>
+    </div>
+  </footer>
+
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="/static/materialize/js/materialize.js"></script>
+  <script src="/static/materialize/js/init.js"></script>
+
+  </body>
+</html>
