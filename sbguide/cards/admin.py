@@ -13,7 +13,7 @@ class CardAdmin(admin.ModelAdmin):
 
     list_display = ('name', 'image_tag', 'set_code', 'modern_legal', 'standard_legal')
     list_display_links = ('name', 'image_tag')
-    search_fields = ('name',)
+    search_fields = ('name', 'set_code')
     list_filter = ('modern_legal', 'standard_legal')
 
     readonly_fields = ['image_tag']

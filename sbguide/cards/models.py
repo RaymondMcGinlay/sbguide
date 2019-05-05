@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.safestring import mark_safe
-from .utils import parse_card_json
+from .utils import parse_card_json, get_set
 
 class CardManager(models.Manager):
     
@@ -10,6 +10,18 @@ class CardManager(models.Manager):
             Card.objects.get_or_create(**data)
         else:
             return data
+
+
+    def add_set(self, set_code, url=None, save=True):
+        if url:
+            set_json = get_set(set_code, url)
+        else:
+            set_json = get_set(set_code)
+        for card in set_json['data']:
+            card  = self.add_card_from_json(card, save=save)
+        if set_json['has_more']:
+            self.add_set(set_code,url=set_json['next_page'], save=save)
+
 
 
 

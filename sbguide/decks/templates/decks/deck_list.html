@@ -1,34 +1,47 @@
-{% extends 'materialize_base.html' %}
+{% extends 'base.html' %}
 {% block content %}
-<h1 class="header center orange-text">Decks</h1>
+<h1 class="header center orange-text">{{ foo }} Decks</h1>
 <div class="row">
 {% for deck in object_list %}
-<div class="col s6">
-    <h3 class="header">{{ deck.deck_name}}</h2>
-    <div class="card horizontal">
-        <div class="card-image">
-        <img class="responsive-img" src="{{deck.emblem.image_link}}"/>
-        </div>
-        <div class="card-stacked">
-        <div class="card-content">
-            <h4>Sideboard</h4>
-            <ul>
-            {% for card in deck.get_sideboard_cards %}
-                    <li>{{ card.card }} </li>
-            {% endfor %}
-            </ul>
-        </div>
-        <div class="card-action">
-            <a href="{% url 'sideboard-list' deck.slug %}">Sideboard Guide</a>
-        </div>
-        <div class="card-action">
-            <a href="{% url 'deck-detail' deck.slug %}">Decklist</a>
-        </div>
+    <div class="col s6">
+        <h3 class="header">{{ deck.deck_name}}</h2>
+        <div class="card horizontal">
+            <div class="card-image">
+            <img class="responsive-img" src="{{deck.emblem.image_link}}"/>
+            </div>
+            <div class="card-stacked">
+            <div class="card-content">
+                <h4>Sideboard</h4>
+                <ul>
+                {% for card in deck.get_sideboard_cards %}
+                        <li>{{ card.card }} </li>
+                {% endfor %}
+                </ul>
+            </div>
+            <div class="card-action">
+                <a href="{% url 'sideboard-list' deck.slug %}">Sideboard Guide</a>
+            </div>
+            <div class="card-action">
+                <a href="{{deck.get_absolute_url }}">Decklist</a>
+            </div>
         </div>
     </div>
 </div>
 {% endfor %}
 </div>
+{% if form %}
+<h2>Add a new deck</h2>
+<form class="login" method="POST" action="{% url 'mydeck-add' %}" enctype="multipart/form-data">>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="primaryAction" type="submit">add</button>
+</form>
+{% endif %}
+<script>
+  $(document).ready(function(){
+    $('select').formSelect();
+  });
+</script>
 {% endblock content %}
 
             

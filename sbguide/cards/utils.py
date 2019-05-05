@@ -1,4 +1,8 @@
 import json
+import requests
+
+SCRYFALL_URL = 'https://api.scryfall.com/'
+DEFAULT_SEARCH_PARAMS = '?format=json&include_extras=false&include_multilingual=false&order=name&unique=cards&q='
 
 def get_modern_cards():
     card_file = open('/var/projects/sbguides/data/scryfall-oracle-cards.json', 'r')
@@ -52,3 +56,21 @@ def parse_card_json(card):
     mana_cost = get_mana_cost(card)
     image = get_image(card)
     return {**legalities, **name_and_set, **mana_cost, **image}
+
+def scryfall_api_call_wrapper(url):
+    response = requests.get(url)
+    print(response)
+    return response.content
+
+def get_json(response):
+    return json.loads(response)
+
+def get_set(set_code, url=None):
+    if not url:
+        url = "{0}cards/search?q=set%3D{1}".format(SCRYFALL_URL, set_code)
+    print(url)
+    response = scryfall_api_call_wrapper(url)
+    json_response = get_json(response)
+    return json_response
+
+    

@@ -1,11 +1,11 @@
-{% extends 'materialize_base.html' %}
+{% extends 'base.html' %}
 {% block content %}
 <h1 class="header center orange-text">{{object_list.first.deck.deck_name}} Matchups</h1>
 
 <form class="login" method="POST" action="{% url 'sideboard-create' %}">
   {% csrf_token %}
   <p>Add guide for {{ form.deck.as_hidden }} {{ form.owner.as_hidden }}{{ form.opponent}}<button class="primaryAction" type="submit">add</button></p>
-</form
+</form>
     {% for object in object_list %}
     {% cycle "row1" "row2"  as rows silent %}
         {% if rows == "row1" %}
@@ -17,7 +17,7 @@
         {% endif %}
     {% endfor %}
 <script>
- $(document).ready(function(){
+  $(document).ready(function(){
     $('select').formSelect();
   });
 </script>

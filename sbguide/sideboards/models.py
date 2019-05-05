@@ -1,6 +1,7 @@
 from django.db import models
 from autoslug import AutoSlugField
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 def get_slug(instance):
     if instance.owner:
@@ -48,7 +49,6 @@ class Sideboard(models.Model):
         return False
     
     def get_absolute_url(self):
-        from django.urls import reverse
         return reverse('sideboard-detail', args=[str(self.slug)])
 
 

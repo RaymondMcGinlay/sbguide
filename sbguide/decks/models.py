@@ -1,26 +1,27 @@
 from django.db import models
+from django.contrib.auth import get_user_model
+from django.urls import reverse
 import urllib
 from autoslug import AutoSlugField
 from cards.models import Card
 
 
 
+
 class DeckManager(models.Manager):
     
-    def import_from_file(self, name, deck_file):
-        decklist = open(deck_file, 'r')
+    def import_from_file(self, deck, decklist):
         decklist_array = []
         for line in decklist.readlines(): 
-            decklist_array.append(line)
-        deck = Deck.objects.create(deck_name=name) 
+            decklist_array.append(line.decode())
         is_sideboard = False
         for card in decklist_array: 
             parts = card.split() 
             if len(parts) > 1: 
                 quantity = parts[0] 
                 name = " ".join(parts[1:]) 
-                print(name) 
-                card = Card.objects.get(name=name) 
+                print(name)
+                card = Card.objects.get(name=name)
                 DeckListItem.objects.create(deck=deck, quantity=quantity, card=card, is_sideboard=is_sideboard) 
             else: 
                 is_sideboard = True         
@@ -42,11 +43,11 @@ class Deck(models.Model):
         ("MODERN", "Modern"),   
     )
     deck_name = models.CharField(max_length=255)
-    slug = AutoSlugField(populate_from='title')
-    archetype = models.CharField(max_length=200, choices=ARCHETYPE_CHOICES)
-    legality = models.CharField(max_length=200, choices=LEGALITY_CHOICES)
-    emblem = models.ForeignKey('cards.card', related_name='emblem_card', on_delete=models.CASCADE)
-
+    slug = AutoSlugField(populate_from='deck_name')
+    archetype = models.CharField("Archetype", max_length=200, choices=ARCHETYPE_CHOICES)
+    legality = models.CharField("Format", max_length=200, choices=LEGALITY_CHOICES)
+    emblem = models.ForeignKey('cards.card', related_name='emblem_card', on_delete=models.CASCADE, blank=True, null=True)
+    owner = models.ForeignKey(get_user_model(), related_name="deck_owner", blank=True, null=True, on_delete=models.CASCADE)
     objects = DeckManager()
 
     class Meta:
@@ -64,6 +65,12 @@ class Deck(models.Model):
         mb_string="".join([urllib.parse.quote("%s %s" % (c['qty'], c['card']))+"%0A" for c in mb])
         sb_string="".join([urllib.parse.quote("%s %s" % (c['qty'], c['card']))+"%0A" for c in sb])   
         return "deckmain=%s&deckside=%s" % (mb_string, sb_string)
+
+    def get_absolute_url(self):
+        if not self.owner:
+            return reverse('deck-detail', args=[str(self.slug)])
+        else:
+            return reverse('mydeck-detail', args=[str(self.slug)])
     
     def __str__(self):
         return self.deck_name 

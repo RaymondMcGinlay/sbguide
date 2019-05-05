@@ -21,8 +21,8 @@
     <div class="nav-wrapper blue">
       <a href="#" class="brand-logo">Logo</a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
-      <li><a href="/my-decks/">My Decks</a></li>
-        <li><a href="/decks/">Meta Decks</a></li>
+      <li><a href="{% url 'mydeck-list' %}/">My Decks</a></li>
+        <li><a href="{% url 'deck-list' %}">Meta Decks</a></li>
         <li><a href="/stats/">Stats</a></li>
         <li><a href="/accounts/login/">Login</a></li>
       </ul>
