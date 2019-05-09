@@ -3,7 +3,11 @@
 <h1 class="header center orange-text">{{object.deck_name}}</h1>
 <div class="row">
     <div class="col s3">
-        <img class="responsive-img" src="{{deck.emblem.image_link}}"/>
+        {% if deck.emblem %}
+            <img class="responsive-img" src="{{deck.emblem.image_link}}"/>
+        {% else %}
+            
+        {% endif %}
         <a href="https://decklist.org/?{{deck.get_decklist_str}}" target="_blank">Get printable Decklist from decklist.org</a>
     </div>
     <div class="col s3">
