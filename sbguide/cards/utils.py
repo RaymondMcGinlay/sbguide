@@ -1,8 +1,10 @@
 import json
 import requests
 
+
 SCRYFALL_URL = 'https://api.scryfall.com/'
 DEFAULT_SEARCH_PARAMS = '?format=json&include_extras=false&include_multilingual=false&order=name&unique=cards&q='
+
 
 def get_modern_cards():
     card_file = open('/var/projects/sbguides/data/scryfall-oracle-cards.json', 'r')

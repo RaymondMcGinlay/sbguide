@@ -41,11 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django.contrib.postgres',
     #third party apps
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'materialize',
+    'material',
     #sbguide apps
     'cards',
     'decks',
@@ -92,7 +93,7 @@ DATABASES = {
         'NAME': os.environ.get('DB_NAME', ''),
         'USER': os.environ.get('DB_USER', ''),
         'PASSWORD': os.environ.get('DB_PASS', ''),
-        'HOST': os.environ.get('DB_PASS', 'localhost'),
+        'HOST': os.environ.get('DB_HOST', 'localhost'),
         'PORT': '5432',
     }
 }

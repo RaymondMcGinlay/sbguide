@@ -22,6 +22,34 @@ class CardManager(models.Manager):
         if set_json['has_more']:
             self.add_set(set_code,url=set_json['next_page'], save=save)
 
+    def find_card(self, name):
+        """
+            first try perfect match 
+        """
+        try:
+            return {"status": "exact", "card": Card.objects.get(name_iexact=name)}
+        except:
+            pass
+        # split multi faced card 
+        name = name.split("/")[0]
+        startswithsearch = Card.objects.filter(name__istartswith=name)
+        if len(startswithsearch) == 1:
+            """ card partially matches with a single hit"""
+            return {"status": "partial", "card": startswithsearch.first()}
+        elif len(startswithsearch) > 1:
+            """ card partially matches with a single hit"""
+            return {"status": "partial-multi", "card": startswithsearch}
+        contains_search = Card.objects.filter(name__icontains=name)
+        if len(contains_search) == 1:
+            """ card partially matches with a single hit"""
+            return {"status": "partial", "card": contains_search.first()}
+        elif len(contains_search) > 1:
+            """ card partially matches with a single hit"""
+            return {"status": "partial-multi", "card": contains_search}
+
+        return {"status": "not-found", 'card': None}
+
+        
 
 
 

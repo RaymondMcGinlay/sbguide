@@ -1,14 +1,28 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse
 from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.views.generic import CreateView, UpdateView
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from django.views.generic import CreateView
-from django.views.generic import UpdateView
-from django.urls import reverse
+from weasyprint import HTML
+from weasyprint.fonts import FontConfiguration
+
+from cards.models import Card
+from decks.models import Deck, DeckListItem
+
 from .forms import SideboardForm, SideboardItemForm
 from .models import Sideboard, SideboardItem
-from decks.models import Deck, DeckListItem
-from cards.models import Card
-from django.contrib.auth.mixins import LoginRequiredMixin
+
+
+
+class SideboardsListView(ListView):
+    template_name = "sideboards/sideboards_list.html"
+
+    def get_queryset(self):
+        Sideboard.objects.order_by('pub_date').distinct('pub_date')
+        return Sideboard.objects.order_by('deck__deck_name').distinct('deck__deck_name')
 
 
 class SideboardListView(ListView):
@@ -16,15 +30,17 @@ class SideboardListView(ListView):
     def get_queryset(self):
         deck_slug = self.kwargs['deck']
         return Sideboard.objects.filter(deck__slug=deck_slug).order_by("opponent__deck_name")
+
     
     def get_context_data(self, **kwargs):
         deck_slug = self.kwargs['deck']
         deck = Deck.objects.get(slug=deck_slug)
         context = super().get_context_data(**kwargs)
-        context["form"] = SideboardForm(initial={
+        decks = Deck.objects.filter(legality=deck.legality)
+        context['form'] = SideboardForm(initial={
             'deck': deck,
-            'owner': self.request.user
-            })
+            'owner': self.request.user,
+            }, deck=deck_slug)
         return context
     
 
@@ -101,3 +117,19 @@ class SideboardItemCreateView(LoginRequiredMixin, CreateView):
         self.object = None
         return super().get(request, *args, **kwargs)
     
+
+def print_decklist(request, deck):
+    deck = Deck.objects.get(slug=deck)
+    sideboards = Sideboard.objects.filter(deck=deck).order_by("opponent__deck_name")
+    response = HttpResponse(content_type="application/pdf")
+    response['Content-Disposition'] = "inline; filename={name}-sideboard-guide.pdf".format(
+        name=deck.slug,
+    )
+    html = render_to_string("sideboards/pdf/base.html", {
+        'deck': deck,
+        'sideboards': sideboards
+    })
+
+    font_config = FontConfiguration()
+    HTML(string=html).write_pdf(response, font_config=font_config)
+    return response

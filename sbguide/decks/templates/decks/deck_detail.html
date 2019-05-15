@@ -1,4 +1,4 @@
-{% extends 'materialize_base.html' %}
+{% extends 'base.html' %}
 {% block content %}
 <h1 class="header center orange-text">{{object.deck_name}}</h1>
 <div class="row">
@@ -6,7 +6,12 @@
         {% if deck.emblem %}
             <img class="responsive-img" src="{{deck.emblem.image_link}}"/>
         {% else %}
-            
+            <p> choose and card as deck image </p>
+            <ul>
+            {% for card in deck.get_card_objects %}
+                <li><a href="?c={{card.card.id}}">{{card.card.name}}</a></li>
+            {% endfor %}
+            </ul>
         {% endif %}
         <a href="https://decklist.org/?{{deck.get_decklist_str}}" target="_blank">Get printable Decklist from decklist.org</a>
     </div>

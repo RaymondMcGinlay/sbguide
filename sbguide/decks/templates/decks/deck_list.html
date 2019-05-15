@@ -1,6 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1 class="header center orange-text">{{ foo }} Decks</h1>
+{% if form %}
+  <a class="waves-effect waves-light btn modal-trigger" href="#modal1">Add a deck</a>
+
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal">
+        <div class="modal-content">
+            <form class="login" method="POST" action="{% url 'mydeck-add' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+        </div>
+        <div class="modal-footer">       
+            <button class="primaryAction" type="submit">add</button>
+        </div>
+        </form>
+    </div>
+{% endif %}
 <div class="row">
 {% for deck in object_list %}
     <div class="col s6">
@@ -29,19 +45,17 @@
 </div>
 {% endfor %}
 </div>
-{% if form %}
-<h2>Add a new deck</h2>
-<form class="login" method="POST" action="{% url 'mydeck-add' %}" enctype="multipart/form-data">>
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="primaryAction" type="submit">add</button>
-</form>
-{% endif %}
+{% endblock content %}
+{% block footerjs %}
+<script>
+  $(document).ready(function(){
+    $('.modal').modal();
+  });
+</script>
 <script>
   $(document).ready(function(){
     $('select').formSelect();
   });
 </script>
-{% endblock content %}
-
+{% endblock footerjs%}
             

@@ -15,14 +15,31 @@ class DeckManager(models.Manager):
         for line in decklist.readlines(): 
             decklist_array.append(line.decode())
         is_sideboard = False
+        self.add_cards(deck, decklist_array)
+
+    def import_from_text(self, deck, text):
+        decklist_array = text.splitlines()
+        self.add_cards(deck, decklist_array)
+    
+    
+    def add_cards(self, deck, decklist_array):
+        is_sideboard = False
         for card in decklist_array: 
             parts = card.split() 
             if len(parts) > 1: 
                 quantity = parts[0] 
                 name = " ".join(parts[1:]) 
                 print(name)
-                card = Card.objects.get(name=name)
-                DeckListItem.objects.create(deck=deck, quantity=quantity, card=card, is_sideboard=is_sideboard) 
+                card_result = Card.objects.find_card(name=name)
+                if card_result['status'] in ['exact', 'partial']:
+                    card = card_result['card']
+                elif card_result['status'] in ['partial-multi']:
+                    card = card_result['card'][0]
+                if card_result['status'] == "not-found":
+                    print("error")
+                    card = None
+                if card:
+                    DeckListItem.objects.create(deck=deck, quantity=quantity, card=card, is_sideboard=is_sideboard) 
             else: 
                 is_sideboard = True         
 
@@ -43,7 +60,9 @@ class Deck(models.Model):
         ("MODERN", "Modern"),   
     )
     deck_name = models.CharField(max_length=255)
-    slug = AutoSlugField(populate_from='deck_name')
+    slug = AutoSlugField(populate_from=lambda instance: instance.deck_name,
+                         unique_with=['legality', 'owner__username'],
+                         slugify=lambda value: value.replace(' ','-'))
     archetype = models.CharField("Archetype", max_length=200, choices=ARCHETYPE_CHOICES)
     legality = models.CharField("Format", max_length=200, choices=LEGALITY_CHOICES)
     emblem = models.ForeignKey('cards.card', related_name='emblem_card', on_delete=models.CASCADE, blank=True, null=True)
@@ -52,6 +71,9 @@ class Deck(models.Model):
 
     class Meta:
         ordering = ['deck_name']
+
+    def get_card_objects(self):
+        return DeckListItem.objects.filter(deck=self)
 
     def get_mainboard_cards(self):
         return [{'qty': d.quantity, 'card' :d.card.name, 'id': d.card.id} for d in DeckListItem.objects.filter(deck=self, is_sideboard=False)]
