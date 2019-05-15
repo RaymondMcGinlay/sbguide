@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+  {% for object in object_list %}
+    {% cycle "row1" "row2"  as rows silent %}
+        {% if rows == "row1" %}
+        <div class="row">
+        {% endif %}
+        {% include "sideboards/widgets/homepage_link.html"%}
+        {% if rows == "row2" or forloop.last %}
+            </div>
+        {% endif %}
+  {% endfor %}
+
+{% endblock content %}
