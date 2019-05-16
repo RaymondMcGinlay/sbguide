@@ -23,7 +23,7 @@ SECRET_KEY = 'pfeq85lxg02lwpsy8#p5z7ll2*hkgdx+g37nvr6xigrc#k&2r%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+SIDE_ID = 1
 ALLOWED_HOSTS = ['*',]
 
 
