@@ -60,7 +60,7 @@ class MyDeckDetailView(LoginRequiredMixin, DetailView):
         return super().get(request, *args, **kwargs)
 
 
-class AddDeck(CreateView):
+class AddDeckView(CreateView):
     form_class = DeckForm
     model = Deck
 

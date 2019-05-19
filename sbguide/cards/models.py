@@ -7,7 +7,10 @@ class CardManager(models.Manager):
     def add_card_from_json(self, card, save=True):
         data = parse_card_json(card)
         if save:
-            Card.objects.get_or_create(**data)
+            if Card.objects.filter(name = data['name']).exists():
+                Card.objects.filter(name = data['name']).update(**data)
+            else:
+                Card.objects.get_or_create(**data)
         else:
             return data
 

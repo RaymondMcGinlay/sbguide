@@ -20,27 +20,20 @@
 <div class="row">
 {% for deck in object_list %}
     <div class="col s6">
-        <h3 class="header">{{ deck.deck_name}}</h2>
-        <div class="card horizontal">
-            <div class="card-image">
-            <img class="responsive-img" src="{{deck.emblem.image_link}}"/>
-            </div>
-            <div class="card-stacked">
+        <div class="card large">
+            <span class="card-title">{{ deck.deck_name}}</span>
             <div class="card-content">
-                <h4>Sideboard</h4>
+                <p>Sideboard</p>
                 <ul>
                 {% for card in deck.get_sideboard_cards %}
                         <li>{{ card.card }} </li>
                 {% endfor %}
                 </ul>
             </div>
-            <div class="card-action">
+            <div class="card-action black">
                 <a href="{% url 'sideboard-list' deck.slug %}">Sideboard Guide</a>
-            </div>
-            <div class="card-action">
                 <a href="{{deck.get_absolute_url }}">Decklist</a>
             </div>
-        </div>
     </div>
 </div>
 {% endfor %}

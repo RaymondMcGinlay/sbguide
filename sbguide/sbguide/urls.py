@@ -24,6 +24,5 @@ urlpatterns = [
     url('cards/', include('cards.urls')),
     url('decks/', include('decks.urls')),
     url('sideboards/', include('sideboards.urls')),
-
-    path('', TemplateView.as_view(template_name='base.html')),
-]
+    path('', include('django.contrib.flatpages.urls')),
+    ]
