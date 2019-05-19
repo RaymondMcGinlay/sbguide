@@ -34,14 +34,4 @@
         <img class="responsive-img" src="{{object.opponent.emblem.image_link}}"/>
     </div>
 </div>
-<script>
-    $( document ).ready(function() {
-    $getJson({% url sideboard-edit-json  object.deck.slug %}, function(result){
-        $.each(result), function ('field'){
-            console.log(field);
-        }
-    })
-    )};
-
-</script>
 {% endblock content %}
