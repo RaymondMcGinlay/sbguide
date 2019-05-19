@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.utils.text import slugify
 import urllib
-from autoslug import AutoSlugField
 from cards.models import Card
 
 
@@ -60,7 +60,7 @@ class Deck(models.Model):
         ("MODERN", "Modern"),   
     )
     deck_name = models.CharField(max_length=255)
-    slug = AutoSlugField(populate_from=deck_name)
+    slug = models.SlugField()
     archetype = models.CharField("Archetype", max_length=200, choices=ARCHETYPE_CHOICES)
     legality = models.CharField("Format", max_length=200, choices=LEGALITY_CHOICES)
     emblem = models.ForeignKey('cards.card', related_name='emblem_card', on_delete=models.CASCADE, blank=True, null=True)
@@ -68,12 +68,13 @@ class Deck(models.Model):
     is_empty = models.BooleanField(default=False, help_text="An empty deck is used to represent an opponents deck, it has no cards")
     objects = DeckManager()
 
-    def get_slug(self):
+    def save(self, *args, **kwargs):
         if self.owner:
-            return "%s-%s" % (self.deck_name, self.owner.id*12543)
+            slug = "%s-%s" % (self.deck_name, self.owner.id*12543)
         else:
-            return self.deck_name
-
+            slug = self.deck_name
+        self.slug = slugify(slug)
+        super(Deck, self).save(*args, **kwargs)
     class Meta:
         ordering = ['deck_name']
 
