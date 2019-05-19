@@ -15,7 +15,7 @@ from decks.models import Deck, DeckListItem
 from .forms import SideboardForm, SideboardItemForm
 from .models import Sideboard, SideboardItem
 
-
+from django.http import JsonResponse
 
 class SideboardsListView(ListView):
     template_name = "sideboards/sideboards_list.html"
@@ -116,7 +116,48 @@ class SideboardItemCreateView(LoginRequiredMixin, CreateView):
                     sideboarditem.save()
         self.object = None
         return super().get(request, *args, **kwargs)
+
+
+class SideboardItemCreateJsonView(SideboardItemCreateView):
+
+
     
+    def get(self, request, *args, **kwargs):
+        sb_slug = self.kwargs['slug']
+        sideboard = Sideboard.objects.get(slug=sb_slug)
+        c = request.GET.get('c', '')
+        p = request.GET.get('p', '')
+        m = request.GET.get('m', '')
+        
+        if c and (m or p):
+            card = Card.objects.get(id=c)
+            sideboarditem, created = SideboardItem.objects.get_or_create(
+                sideboard = sideboard,
+                card = card
+            )
+            if p:
+                if sideboarditem.delta < 0:
+                    is_sideboard = False
+                else:
+                    is_sideboard = True 
+                deck_qty = DeckListItem.objects.get(deck=sideboard.deck, card=card, is_sideboard=is_sideboard).quantity
+                delta = sideboarditem.delta+1
+                if delta <= deck_qty:
+                    sideboarditem.delta = delta
+                    sideboarditem.save()
+            if m:
+                if sideboarditem.delta > 0:
+                    is_sideboard = True
+                else:
+                    is_sideboard = False
+                deck_qty = DeckListItem.objects.get(deck=sideboard.deck, card=card, is_sideboard=is_sideboard).quantity
+                delta = sideboarditem.delta-1
+                if delta >= -deck_qty:
+                    sideboarditem.delta = delta
+                    sideboarditem.save()
+        self.object = None
+        data = {'cards_in': sideboard.get_cards_in(), 'cards_out': sideboard.get_cards_out()}
+        return JsonResponse(data)
 
 def print_decklist(request, deck):
     deck = Deck.objects.get(slug=deck)

@@ -6,7 +6,7 @@
 <h2 class="header center orange-text">{{object.deck.deck_name}} V {{object.opponent.deck_name}}</h2>
 <div class="row">
   <div class="col s3">
-  <form class="login" method="POST" action="{% url 'sideboard-edit' object.slug %}">
+  <form class="login" method="POST" action="{% url 'sideboard-edit-json' object.slug %}">
     {% csrf_token %}
     {{ form.card }}{{ form.delta }}{{form.sideboard.as_hidden}}<p>
     <button class="primaryAction" type="submit">Add</button>
@@ -18,32 +18,26 @@
         <h4>Main</h4>
         <ul>
             {% for card in object.deck.get_mainboard_cards %}
-                <li>{{card.qty}} x <a href="{% url 'sideboard-edit' object.slug %}?c={{card.id}}&m=true">{{card.card}}</a></li>
+                <li>{{card.qty}} x <a class="update_link" href="{% url 'sideboard-edit-json' object.slug %}?c={{card.id}}&m=true">{{card.card}}</a></li>
             {% endfor %}
         </ul>
 
     </div>
     <div class="col s3">
         <h4>Cards Out</h4>
-        <ul>
-            {% for card in object.get_cards_out %}
-                <li>{{card.qty}} x <a href="{% url 'sideboard-edit' object.slug %}?c={{card.id}}&p=true">{{card.card}}</a></li>
-            {% endfor %}
+        <ul class="cards_out">
         </ul>
     </div>
     <div class="col s3">
         <h4>Cards In</h4>
-        <ul>
-            {% for card in object.get_cards_in %}
-                <li>{{card.qty}} x <a href="{% url 'sideboard-edit' object.slug %}?c={{card.id}}&m=true">{{card.card}}</a></li>
-            {% endfor %}
+        <ul class="cards_in">
         </ul>
     </div>
     <div class="col s3">
         <h4>Side</h4>
         <ul>
             {% for card in object.deck.get_sideboard_cards %}
-                <li>{{card.qty}} x <a href="{% url 'sideboard-edit' object.slug %}?c={{card.id}}&p=true">{{card.card}}</a></li>
+                <li>{{card.qty}} x <a class= "update_link" href="{% url 'sideboard-edit-json' object.slug %}?c={{card.id}}&p=true">{{card.card}}</a></li>
             {% endfor %}
         </ul>
     </div>
@@ -53,4 +47,40 @@
 
 {{ form.media }}
 <link href="/static/css/_select2.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+<script>
+   function update_list(base_url) {
+        $.getJSON(base_url, function(result){
+            cards_in = result['cards_in'];
+            cards_out = result['cards_out'];
+            cards_in_list = [];
+            cards_out_list = [];
+            console.log("cards_in");
+            for (var t = 0; t < cards_in.length; t++){
+                url = "{% url 'sideboard-edit-json' object.slug %}"
+                link = "<a class = 'update_link' href = '"+url+"?c="+cards_in[t].id+"&m=true'>"+cards_in[t].card+"</a>";
+                cards_in_list += "<li>"+cards_in[t].qty+" x "+link+"</li>";
+            }
+            for (var t = 0; t < cards_out.length; t++){
+                url = "{% url 'sideboard-edit-json' object.slug %}"
+                link = "<a class = 'update_link' href = '"+url+"?c="+cards_out[t].id+"&p=true'>"+cards_out[t].card+"</a>";
+                cards_out_list += "<li>"+cards_out[t].qty+" x "+link+"</li>";
+            }
+            $(".cards_in").html(cards_in_list);
+            $(".cards_out").html(cards_out_list);
+        })
+   }
+
+    $( document ).ready(function() {
+       base_url = "{% url 'sideboard-edit-json'  object.slug %}",
+       update_list(base_url);
+    });
+
+    $(".update_link").click(function (e) {
+        var value = $(this).attr("href");
+        console.log(value);
+        update_list(value);
+        e.preventDefault();
+    });
+
+</script>
 {% endblock content %}

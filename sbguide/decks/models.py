@@ -60,14 +60,19 @@ class Deck(models.Model):
         ("MODERN", "Modern"),   
     )
     deck_name = models.CharField(max_length=255)
-    slug = AutoSlugField(populate_from=lambda instance: instance.deck_name,
-                         unique_with=['legality', 'owner__username'],
-                         slugify=lambda value: value.replace(' ','-'))
+    slug = AutoSlugField(populate_from=deck_name)
     archetype = models.CharField("Archetype", max_length=200, choices=ARCHETYPE_CHOICES)
     legality = models.CharField("Format", max_length=200, choices=LEGALITY_CHOICES)
     emblem = models.ForeignKey('cards.card', related_name='emblem_card', on_delete=models.CASCADE, blank=True, null=True)
     owner = models.ForeignKey(get_user_model(), related_name="deck_owner", blank=True, null=True, on_delete=models.CASCADE)
+    is_empty = models.BooleanField(default=False, help_text="An empty deck is used to represent an opponents deck, it has no cards")
     objects = DeckManager()
+
+    def get_slug(self):
+        if self.owner:
+            return "%s-%s" % (self.deck_name, self.owner.id*12543)
+        else:
+            return self.deck_name
 
     class Meta:
         ordering = ['deck_name']

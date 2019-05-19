@@ -5,6 +5,7 @@ from .views import (
     SideboardsListView,
     SideboardCreateView,
     SideboardItemCreateView,
+    SideboardItemCreateJsonView,
     print_decklist,
 )
 
@@ -15,4 +16,5 @@ urlpatterns = [
     path('<deck>/pdf/', print_decklist, name='sideboard-list-print'),
     path('<slug:slug>/detail/', SideboardDetailView.as_view(), name='sideboard-detail'),
     path('<slug:slug>/edit/', SideboardItemCreateView.as_view(), name='sideboard-edit'),
+    path('<slug:slug>/edit-json/', SideboardItemCreateJsonView.as_view(), name='sideboard-edit-json'),
 ]
