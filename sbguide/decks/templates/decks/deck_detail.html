@@ -31,7 +31,27 @@
             {% endfor %}
         </ul>
     </div>
+    <div class = "col s3">
+        {% if form %}
+                <div class="modal-content">
+                    <form class="login" method="POST" action="{% url 'mydeck-update' object.slug %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                </div>
+                <div class="modal-footer">       
+                    <button class="primaryAction" type="submit">add</button>
+                </div>
+                </form>
+        {% endif %}
+
+    </div>
 </div>
 {% endblock content %}
 
-            
+{% block footerjs %}
+<script>
+  $(document).ready(function(){
+    $('select').formSelect();
+  });
+</script>
+{% endblock footerjs%}

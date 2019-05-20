@@ -5,10 +5,12 @@ from .views import (
     MyDeckListView,
     MyDeckDetailView,
     AddDeckView,
+    UpdateDeckView,
 )
 
 urlpatterns = [
     path('mydecks-add', AddDeckView.as_view(), name='mydeck-add'),
+    path('mydecks-update/<slug:slug>/', UpdateDeckView.as_view(), name='mydeck-update'),
     path('mydecks/<slug:slug>/', MyDeckDetailView.as_view(), name='mydeck-detail'),
     path('mydecks/<format>/', MyDeckListView.as_view(), name='deck-mylist-format'),
     path('mydecks/', MyDeckListView.as_view(), name='deck-mylist'),

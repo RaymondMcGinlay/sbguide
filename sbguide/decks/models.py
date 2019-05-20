@@ -10,20 +10,21 @@ from cards.models import Card
 
 class DeckManager(models.Manager):
     
-    def import_from_file(self, deck, decklist):
+    def import_from_file(self, deck, decklist, update=False):
         decklist_array = []
         for line in decklist.readlines(): 
             decklist_array.append(line.decode())
         is_sideboard = False
-        self.add_cards(deck, decklist_array)
+        self.add_cards(deck, decklist_array, update)
 
-    def import_from_text(self, deck, text):
+    def import_from_text(self, deck, text, update=False):
         decklist_array = text.splitlines()
-        self.add_cards(deck, decklist_array)
+        self.add_cards(deck, decklist_array, update)
     
     
-    def add_cards(self, deck, decklist_array):
+    def add_cards(self, deck, decklist_array, update):
         is_sideboard = False
+        update_cards = []
         for card in decklist_array: 
             parts = card.split() 
             if len(parts) > 1: 
@@ -39,9 +40,21 @@ class DeckManager(models.Manager):
                     print("error")
                     card = None
                 if card:
-                    DeckListItem.objects.create(deck=deck, quantity=quantity, card=card, is_sideboard=is_sideboard) 
+                    if update:
+                        dlt = DeckListItem.objects.filter(deck=deck, card=card, is_sideboard=is_sideboard).update(quantity=quantity)
+                        if dlt:
+                            decklistitem = DeckListItem.objects.get(deck=deck, card=card, is_sideboard=is_sideboard)
+                        else:
+                            decklistitem = DeckListItem.objects.create(deck=deck, card=card, is_sideboard=is_sideboard, quantity=quantity)
+                        update_cards.append(decklistitem.id)
+                    else:    
+                        decklistitem = DeckListItem.objects.create(deck=deck, card=card, is_sideboard=is_sideboard, quantity=quantity)
             else: 
-                is_sideboard = True         
+                is_sideboard = True
+            if update:
+                # delete any removed cards
+                DeckListItem.objects.filter(deck=deck).exclude(id__in=update_cards).delete()
+
 
 
 
@@ -93,6 +106,17 @@ class Deck(models.Model):
         mb_string="".join([urllib.parse.quote("%s %s" % (c['qty'], c['card']))+"%0A" for c in mb])
         sb_string="".join([urllib.parse.quote("%s %s" % (c['qty'], c['card']))+"%0A" for c in sb])   
         return "deckmain=%s&deckside=%s" % (mb_string, sb_string)
+    
+    def deck_items_text(self):
+        dlt = ""
+        for d in DeckListItem.objects.filter(deck=self, is_sideboard=False).order_by('card'):
+            dlt += "%s %s\n" % (d.quantity, d.card.name)
+        dlt += "\n"
+        for d in DeckListItem.objects.filter(deck=self, is_sideboard=True).order_by('card'):
+            dlt += "%s %s\n" % (d.quantity, d.card.name)
+        return dlt
+        
+
 
     def get_absolute_url(self):
         if not self.owner:

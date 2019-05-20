@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from decks.models import Deck, DeckListItem
 from decks.forms import DeckForm
 from cards.models import Card
@@ -59,6 +59,18 @@ class MyDeckDetailView(LoginRequiredMixin, DetailView):
             deck.save()
         return super().get(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        deck = context['object']
+        context['form'] = DeckForm(initial={
+            'deck_name': deck.deck_name,
+            'archetype': deck.archetype,
+            'legality': deck.legality,
+            'deck_items_text': deck.deck_items_text()
+            })
+        return context
+    
+
 
 class AddDeckView(CreateView):
     form_class = DeckForm
@@ -72,8 +84,26 @@ class AddDeckView(CreateView):
         deck_items_text = form.fields['deck_items_text']
         myfile = self.request.FILES.get('deck_items_file', False)
         if myfile:
-            Deck.objects.import_from_file(deck, myfile)
+            Deck.objects.import_from_file(deck, myfile, update=False)
         elif deck_items_text:
-            Deck.objects.import_from_text(deck, form.cleaned_data['deck_items_text'])
+            Deck.objects.import_from_text(deck, form.cleaned_data['deck_items_text'], update=False)
+        success_url = deck.get_absolute_url()
+        return HttpResponseRedirect(success_url)
+
+class UpdateDeckView(UpdateView):
+    form_class = DeckForm
+    model = Deck
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.owner = self.request.user
+        self.object.save()
+        deck = self.object
+        deck_items_text = form.fields['deck_items_text']
+        myfile = self.request.FILES.get('deck_items_file', False)
+        if myfile:
+            Deck.objects.import_from_file(deck, myfile, update=True)
+        elif deck_items_text:
+            Deck.objects.import_from_text(deck, form.cleaned_data['deck_items_text'], update=True)
         success_url = deck.get_absolute_url()
         return HttpResponseRedirect(success_url)
