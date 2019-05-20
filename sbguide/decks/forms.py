@@ -17,4 +17,3 @@ class DeckForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(DeckForm, self).__init__(*args, **kwargs)
         self.fields['deck_items_text'].widget.attrs['class'] = "materialize-textarea"
-        self.fields['deck_items_text'].widget.attrs['id'] = "deck-list"
