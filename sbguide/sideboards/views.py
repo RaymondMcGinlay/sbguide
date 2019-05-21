@@ -8,7 +8,8 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from weasyprint import HTML
 from weasyprint.fonts import FontConfiguration
-
+from django_weasyprint import WeasyTemplateResponseMixin
+from django.conf import settings
 from cards.models import Card
 from decks.models import Deck, DeckListItem
 
@@ -174,3 +175,31 @@ def print_decklist(request, deck):
     font_config = FontConfiguration()
     HTML(string=html).write_pdf(response, font_config=font_config)
     return response
+
+class SideboardListPrintView(WeasyTemplateResponseMixin, ListView):
+    # show pdf in-line (default: True, show download dialog)
+    pdf_attachment = True
+    pdf_filename = 'sideboard_guide.pdf'
+    pdf_stylesheets = [
+        settings.STATIC_ROOT + 'css/print.css',
+    ]
+
+    def get_queryset(self):
+        deck_slug = self.kwargs['deck']
+        return Sideboard.objects.filter(deck__slug=deck_slug).order_by("opponent__deck_name")
+
+    
+    def get_context_data(self, **kwargs):
+        deck_slug = self.kwargs['deck']
+        deck = Deck.objects.get(slug=deck_slug)
+        context = super().get_context_data(**kwargs)
+        decks = Deck.objects.filter(legality=deck.legality)
+        context['form'] = SideboardForm(initial={
+            'deck': deck,
+            'owner': self.request.user,
+            }, deck=deck_slug)
+        return context
+    def get_template_names(self):
+        return ['sideboards/pdf/base.html',]
+
+
