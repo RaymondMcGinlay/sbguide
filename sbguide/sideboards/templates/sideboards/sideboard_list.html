@@ -2,7 +2,7 @@
 {% block content %}
 <h1 class="header center orange-text">{{object_list.first.deck.deck_name}} Matchups</h1>
 {% if object_list %}
-  <a href  ="{% url 'sideboard-list-print' object_list.first.deck.slug %}">Print</a>
+  <a href  ="{% url 'sideboard-list-print' object_list.first.deck.slug %}" download="{{object_list.first.deck.deck_name}}-guide.pdf">Print</a>
 {% endif %}
 {% if form %}
 <form class="login" method="POST" action="{% url 'sideboard-create' %}">

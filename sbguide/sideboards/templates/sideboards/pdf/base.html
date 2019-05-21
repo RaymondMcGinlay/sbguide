@@ -1,9 +1,10 @@
 
 <body>
-    {% for object in sideboards %}
-    <div class="col s6">
+<h2>{{object_list.first.deck.deck_name}} Sideboard Guide</h2>
+    <div class="content">
+    {% for object in object_list %}
+
         {% include "sideboards/widgets/sb_compact_pdf.html" %}
-    </div>
     {% endfor %}
     </div>
 </body>
