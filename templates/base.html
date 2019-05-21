@@ -28,8 +28,13 @@
         <a href="#" class="brand-logo">MTG Matchups</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
           <li><a href="{% url 'deck-list' %}">Meta decks</a></li>
-          <li><a href="{% url 'deck-mylist' %}">My Decks</a></li>
+          <li><a href="{% url 'deck-mylist' %}">My decks</a></li>
           <li><a href="{% url 'sideboards-list' %}">Sideboards</a></li>
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'account_logout' %}">Log out</a></li>
+          {% else %}
+          <li><a href="{% url 'account_login' %}">Log in</a></li>
+          {% endif %}
         </ul>
       </div>
     </div>

@@ -25,7 +25,7 @@ SECRET_KEY = 'pfeq85lxg02lwpsy8#p5z7ll2*hkgdx+g37nvr6xigrc#k&2r%'
 DEBUG = True
 SIDE_ID = 1
 ALLOWED_HOSTS = ['*',]
-
+LOGIN_REDIRECT_URL = "/"
 
 # Application definition
 

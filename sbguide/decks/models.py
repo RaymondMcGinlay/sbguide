@@ -83,7 +83,7 @@ class Deck(models.Model):
 
     def save(self, *args, **kwargs):
         if self.owner:
-            slug = "%s-%s" % (self.deck_name, self.owner.id*12543)
+            slug = "%s-%s" % (self.deck_name, self.owner.username)
         else:
             slug = self.deck_name
         self.slug = slugify(slug)
