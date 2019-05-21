@@ -72,6 +72,9 @@ class Card(models.Model):
             return mark_safe('<img src="%s" width="25%" height="25%" />' % self.image_link)
         else:
             return ""
+    @property
+    def image_art_crop(self):
+        return self.image_link.replace('normal', 'art_crop')
 
 
     def __str__(self):

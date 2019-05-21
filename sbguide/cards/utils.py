@@ -7,7 +7,7 @@ DEFAULT_SEARCH_PARAMS = '?format=json&include_extras=false&include_multilingual=
 
 
 def get_modern_cards():
-    card_file = open('/var/projects/sbguides/data/scryfall-oracle-cards.json', 'r')
+    card_file = open('/var/projects/sbguide/data/scryfall-oracle-cards.json', 'r')
     cards_json = json.loads(card_file.read())
     modern_cards = []
     for card in cards_json: 
