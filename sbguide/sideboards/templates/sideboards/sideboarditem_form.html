@@ -50,11 +50,14 @@
 
 {{ form.media }}
 <link href="/static/css/_select2.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+{% endblock content %}
+{% block footerjs %}
 <script type="text/javascript" src="{% static 'js/update_sb.js' %}"></script>
-<script>
+<script type="text/javascript">
 $( document ).ready(function() {
-    base_url = "{% url 'sideboard-edit-json' object.slug %}",
+    base_url = "{% url 'sideboard-edit-json' object.slug %}";
+    console.log(base_url);
     update_list(base_url);
 });
 </script>
-{% endblock content %}
+{% endblock %}

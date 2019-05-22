@@ -20,9 +20,12 @@
             </div>
         {% endif %}
     {% endfor %}
+{% endblock content %}
+
+{% block footerjs %}
 <script>
-  $(document).ready(function(){
+ $(document).ready(function(){
     $('select').formSelect();
   });
 </script>
-{% endblock content %}
+{% endblock %}

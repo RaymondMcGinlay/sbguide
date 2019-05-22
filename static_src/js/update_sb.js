@@ -16,11 +16,6 @@ function update_list(base_url) {
     })
 }
 
-$( document ).ready(function() {
-    base_url = "{% url 'sideboard-edit-json'  object.slug %}",
-    update_list(base_url);
-});
-
 $(".update_link").click(function (e) {
     var value = $(this).attr("href");
     console.log(value);
