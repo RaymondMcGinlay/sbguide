@@ -72,6 +72,8 @@ class Deck(models.Model):
         ("STANDARD", "Standard"),
         ("MODERN", "Modern"),   
     )
+
+    Lands = ['Basic', 'Land']
     deck_name = models.CharField(max_length=255)
     slug = models.SlugField()
     archetype = models.CharField("Archetype", max_length=200, choices=ARCHETYPE_CHOICES)
@@ -91,14 +93,35 @@ class Deck(models.Model):
     class Meta:
         ordering = ['deck_name']
 
+    def get_card_types(self, ThisDeck):
+        card_types = ["creature", "instant", "planeswalker", "sorcery", "enchantment", "artifact", "land", ]
+        cards_dict = {}
+        card_types_in_deck = []
+        ids_in_deck = []
+        for card in card_types:
+            result = ThisDeck.filter(card__type_line__icontains=card)
+            if result:
+                cards_dict[card] = result
+                card_types_in_deck.append(card)
+                ids_in_deck += [r.id for r in result]
+                ThisDeck = ThisDeck.exclude(id__in=ids_in_deck)
+        cards_dict['types'] = card_types_in_deck
+        return cards_dict
+
     def get_card_objects(self):
         return DeckListItem.objects.filter(deck=self)
 
     def get_mainboard_cards(self):
-        return [{'qty': d.quantity, 'card' :d.card.name, 'id': d.card.id} for d in DeckListItem.objects.filter(deck=self, is_sideboard=False)]
+        return [{'qty': d.quantity, 'card' :d.card.name, 'id': d.card.id, 'object': d.id, 'is_sb': False} for d in DeckListItem.objects.filter(deck=self, is_sideboard=False)]
 
     def get_sideboard_cards(self):
-        return [{'qty': d.quantity, 'card' :d.card.name, 'id': d.card.id} for d in DeckListItem.objects.filter(deck=self, is_sideboard=True)]
+        return [{'qty': d.quantity, 'card' :d.card.name, 'id': d.card.id, 'object': d.id, 'is_sb': False} for d in DeckListItem.objects.filter(deck=self, is_sideboard=True)]
+
+    def get_mainboard_cards_sorted(self):
+        return self.get_card_types(self.get_card_objects().filter(is_sideboard=False))
+
+    def get_side_cards_sorted(self):
+        return self.get_card_types(self.get_card_objects().filter(is_sideboard=True))
 
     def get_decklist_str(self):
         mb = self.get_mainboard_cards()

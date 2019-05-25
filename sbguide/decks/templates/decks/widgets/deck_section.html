@@ -1,0 +1,15 @@
+
+{% if card_type != "types" %}
+    <li>
+    <div class="collapsible-header"> 
+    <span >{{card_type}}</span>
+    </div>
+    <div class="collapsible-body">
+    <span>
+    {% for card in cards %}   
+        {{card.quantity}} X {{card.card.name}} </br>
+    {% endfor %}
+    </span>
+    <div>
+    </li>
+{% endif %}

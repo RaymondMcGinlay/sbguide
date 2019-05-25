@@ -59,6 +59,7 @@ class SideboardItem(models.Model):
     """
     sideboard = models.ForeignKey('sideboards.sideboard', related_name='sideboarditem_sideboard', on_delete=models.CASCADE)
     card = models.ForeignKey('cards.card', related_name='sideboarditem_card', on_delete=models.CASCADE)
+    decklist_item = models.ForeignKey('decks.decklistitem', related_name='sideboarditem_decklistitem', on_delete=models.CASCADE, blank=True, null=True)
     delta = models.IntegerField(default=0)
 
     def in_or_out(self):

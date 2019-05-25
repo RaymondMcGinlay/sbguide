@@ -60,6 +60,8 @@ class CardManager(models.Manager):
 # Create your models here.
 class Card(models.Model):
     name = models.CharField(max_length=255)
+    scryfall_id = models.CharField(max_length=255, blank=True, null=True)
+    type_line = models.CharField(max_length=255, blank=True, null=True)
     set_code = models.CharField(max_length=255)
     image_link = models.URLField()
     mana_cost = models.CharField(max_length=255, blank=True, null=True)

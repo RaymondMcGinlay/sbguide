@@ -1,0 +1,27 @@
+ <nav>
+    <div class="nav-wrapper">
+      <a href="#!" class="brand-logo center">MTG Matchups</a>
+      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+          <li><a href="{% url 'deck-list' %}">Meta decks</a></li>
+          <li><a href="{% url 'deck-mylist' %}">My decks</a></li>
+          <li><a href="{% url 'sideboards-list' %}">Sideboards</a></li>
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'account_logout' %}">Log out</a></li>
+          {% else %}
+            <li><a href="{% url 'account_login' %}">Log in</a></li>
+          {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  <ul class="sidenav" id="mobile-demo">
+    <li><a href="{% url 'deck-list' %}">Meta decks</a></li>
+    <li><a href="{% url 'deck-mylist' %}">My decks</a></li>
+    <li><a href="{% url 'sideboards-list' %}">Sideboards</a></li>
+    {% if user.is_authenticated %}
+        <li><a href="{% url 'account_logout' %}">Log out</a></li>
+    {% else %}
+        <li><a href="{% url 'account_login' %}">Log in</a></li>
+    {% endif %}
+  </ul>

@@ -18,30 +18,35 @@
 <div class="row">
     <div class="col s4">
         <h4 class="header orange-text center">Main</h4>
-        <ul>
+        <table class="sbtable">
             {% for card in object.deck.get_mainboard_cards %}
-                <li>{{card.qty}} x {{ card.card}}
-                <a class="update_link" href="{% url 'sideboard-edit-json' object.slug %}?c={{card.id}}&p=true"><i class="material-icons">arrow_back</i></a>
-                <a class="update_link" href="{% url 'sideboard-edit-json' object.slug %}?c={{card.id}}&m=true"><i class="material-icons">arrow_forward</i></a></li>
+            <tr>
+                <td class="card-qty-{{card.object}}">{{card.qty}}</td><td>{{ card.card}}</td>
+                <td>
+                <a class="update_link card-id-{{card.object}}" href="{% url 'sideboard-edit-json' object.slug %}?c={{card.id}}&m=true"><i class="material-icons">arrow_forward</i></a></li>
+                </td>
+            </tr>
             {% endfor %}
-        </ul>
+        </table>
 
+    </div>
+    <div class="col s4">
+        <h4 class="header orange-text center">Sideboard</h4>
+        <table class="sbtable">
+            {% for card in object.deck.get_sideboard_cards %}
+            <tr>
+                <td><a class="update_link card-id-{{card.id}}"  href="{% url 'sideboard-edit-json' object.slug %}?c={{card.id}}&p=true"><i class="material-icons">arrow_back</i></a></td>
+                <td>{{ card.card}}</td>
+                <td class="card-qty-{{card.id}}">{{card.qty}}</td>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
     <div class="col s4">
         <h4 class="header orange-text center">Guide</h4>
         <ul class="cards_out">
         </ul>
         <ul class="cards_in">
-        </ul>
-    </div>
-    <div class="col s4">
-        <h4 class="header orange-text center">Sideboard</h4>
-        <ul>
-            {% for card in object.deck.get_sideboard_cards %}
-                <li><a class="update_link" href="{% url 'sideboard-edit-json' object.slug %}?c={{card.id}}&p=true"><i class="material-icons">arrow_back</i></a>
-                <a class="update_link" href="{% url 'sideboard-edit-json' object.slug %}?c={{card.id}}&m=true"><i class="material-icons">arrow_forward</i></a>
-                {{card.qty}} x {{ card.card}}</li>
-            {% endfor %}
         </ul>
     </div>
 </div>
@@ -52,11 +57,33 @@
 <link href="/static/css/_select2.css" type="text/css" rel="stylesheet" media="screen,projection"/>
 {% endblock content %}
 {% block footerjs %}
-<script type="text/javascript" src="{% static 'js/update_sb.js' %}"></script>
-<script type="text/javascript">
+<script>
 $( document ).ready(function() {
     base_url = "{% url 'sideboard-edit-json' object.slug %}";
-    console.log(base_url);
+    function update_list(base_url) {
+    $.getJSON(base_url, function(result){
+        cards_in = result['cards_in'];
+        cards_out = result['cards_out'];
+        cards_in_list = [];
+        cards_out_list = [];
+        console.log("cards_in");
+        for (var t = 0; t < cards_in.length; t++){
+            cards_in_list += "<li> +"+cards_in[t].qty+" "+cards_in[t].card+"</li>";
+        }
+        for (var t = 0; t < cards_out.length; t++){
+            cards_out_list += "<li> -"+cards_out[t].qty+"  "+cards_out[t].card+"</li>";
+        }
+        $(".cards_in").html(cards_in_list);
+        $(".cards_out").html(cards_out_list);
+    })
+}
+
+    $(".update_link").click(function (e) {
+        var value = $(this).attr("href");
+        console.log(value);
+        update_list(value);
+        e.preventDefault();
+    });
     update_list(base_url);
 });
 </script>

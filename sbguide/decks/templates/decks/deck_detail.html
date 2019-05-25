@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1 class="header center orange-text">{{object.deck_name}}</h1>
 <div class="row">
     <div class="col s4">
         {% if deck.emblem %}
+        <h3 class="header center orange-text">{{object.deck_name}}</h3>
             <img class="responsive-img" src="{{deck.emblem.image_link}}"/>
         {% else %}
             <p> choose and card as deck image </p>
@@ -15,24 +15,29 @@
         {% endif %}
         <a href="https://decklist.org/?{{deck.get_decklist_str}}" target="_blank">Get printable Decklist from decklist.org</a>
     </div>
-    <div class="col s4">
+    <div class="col s8">
         <ul class="tabs">
            <li class="tab col s4"><a href="#main">Main</a></li>
            <li class="tab col s4"><a href="#side">Side</a></li>
         </ul>
         <div id="main">
-            <ul>
-                {% for card in object.get_mainboard_cards %}
-                    <li>{{card.qty}} x {{card.card}}</li>
+            <ul class="collapsible expandable">
+                {% for card_type, cards in deck.get_mainboard_cards_sorted.items %}
+
+                    {% if card_type != "types" %}
+                        {% include "decks/widgets/deck_section.html"%}
+                    {% endif %}
                 {% endfor %}
             </ul>
         </div>
         <div id="side">
-        <ul>
-            {% for card in object.get_sideboard_cards %}
-                <li>{{card.qty}} x {{card.card}}</li>
+            <ul class="collapsible expandable">
+            {% for card_type, cards in deck.get_side_cards_sorted.items %}
+                {% if card_type != "types" %}
+                    {% include "decks/widgets/deck_section.html"%}
+                {% endif %}
             {% endfor %}
-        </ul>
+            </ul>
         </div>
     </div>
     <div class = "col s4">
@@ -51,13 +56,3 @@
     </div>
 </div>
 {% endblock content %}
-
-{% block footerjs %}
-<script>
-  $(document).ready(function(){
-    $('select').formSelect();
-    $('.tabs').tabs();
-  });
-      
-</script>
-{% endblock footerjs%}
