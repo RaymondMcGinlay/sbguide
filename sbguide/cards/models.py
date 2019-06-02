@@ -77,6 +77,10 @@ class Card(models.Model):
     @property
     def image_art_crop(self):
         return self.image_link.replace('normal', 'art_crop')
+    
+    @property
+    def image_small(self):
+        return self.image_link.replace('normal', 'small')
 
 
     def __str__(self):

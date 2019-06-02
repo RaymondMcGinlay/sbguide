@@ -8,9 +8,11 @@ from .views import (
     SideboardItemCreateJsonView,
     SideboardListPrintView,
 )
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('', SideboardsListView.as_view(), name='sideboards-list'),
+    path('sortable/', TemplateView.as_view(template_name="sideboards/widgets/sortable_lists.html")),
     path('create/', SideboardCreateView.as_view(), name='sideboard-create'),
     path('<deck>/', SideboardListView.as_view(), name='sideboard-list'),
     path('<deck>/pdf/', SideboardListPrintView.as_view(), name='sideboard-list-print'),

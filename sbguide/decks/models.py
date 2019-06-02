@@ -98,14 +98,17 @@ class Deck(models.Model):
         cards_dict = {}
         card_types_in_deck = []
         ids_in_deck = []
+        cards_list = []
         for card in card_types:
-            result = ThisDeck.filter(card__type_line__icontains=card)
+            result = ThisDeck.filter(card__type_line__icontains=card).order_by('name')
             if result:
                 cards_dict[card] = result
                 card_types_in_deck.append(card)
+                cards_list.append(cards)
                 ids_in_deck += [r.id for r in result]
                 ThisDeck = ThisDeck.exclude(id__in=ids_in_deck)
         cards_dict['types'] = card_types_in_deck
+        cards_dict['all_cards']
         return cards_dict
 
     def get_card_objects(self):

@@ -37,10 +37,10 @@ class Sideboard(models.Model):
         return SideboardItem.objects.filter(sideboard=self).order_by('card__name')
     
     def get_cards_in(self):
-        return [{'qty': d.delta, 'card' :d.card.name, 'id': d.card.id} for d in self.get_sb_items() if d.delta > 0]
+        return [{'qty': d.delta, 'card' :d.card.name, 'id': d.card.id, d.card.image_small} for d in self.get_sb_items() if d.delta > 0]
     
     def get_cards_out(self):
-        return [{'qty': abs(d.delta), 'card' :d.card.name, 'id': d.card.id} for d in self.get_sb_items() if d.delta < 0]
+        return [{'qty': abs(d.delta), 'card' :d.card.name, 'id': d.card.id, d.card.image_small} for d in self.get_sb_items() if d.delta < 0]
     
     def check_sanity(self):
         diff = sum([sideboarditem.delta for sideboarditem in self.get_sb_items()])
@@ -48,6 +48,20 @@ class Sideboard(models.Model):
             return True
         return False
     
+    def get_sb_list(self):
+        # get list after sb is applied
+        base_deck = self.deck.get_card_objects()
+        base_main_board = [base_deck.filter(is_sidebord=False)]
+        base_side_board = base_deck.filter(is_sidebord=True)
+        for sb_item in get_sb_items():
+            index = [i for i,x in enumerate(base_main_board) if x.card == sb_item.card]
+            if index:
+                base_main_board[index[0]].quantity += sb_item.delta
+            else:
+                pass
+
+
+
     def get_absolute_url(self):
         return reverse('sideboard-detail', args=[str(self.slug)])
 
